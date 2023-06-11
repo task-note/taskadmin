@@ -1,20 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
-import CheckButton from "react-validation/build/button";
-
 import AuthService from "../services/auth.service";
-
-const required = (value) => {
-  if (!value) {
-    return (
-      <div className="invalid-feedback d-block">
-        This field is required!
-      </div>
-    );
-  }
-};
 
 const Login = () => {
   const form = useRef();
@@ -24,6 +10,8 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [usernameErr, setUserNameError] = useState(false);
+  const [passwordErr, setPasswordError] = useState(false);
 
   const navigate = useNavigate();
 
@@ -43,9 +31,10 @@ const Login = () => {
     setMessage("");
     setLoading(true);
 
-    form.current.validateAll();
+    setPasswordError(password.length == 0);
+    setUserNameError(username.length == 0);
 
-    if (checkBtn.current.context._errors.length === 0) {
+    if (password.length != 0 && username.length != 0) {
       AuthService.login(username, password).then(
         () => {
           navigate("/profile");
@@ -77,29 +66,37 @@ const Login = () => {
           className="profile-img-card"
         />
 
-        <Form onSubmit={handleLogin} ref={form}>
+        <form onSubmit={handleLogin} ref={form}>
           <div className="form-group">
             <label htmlFor="username">Username</label>
-            <Input
-              type="text"
-              className="form-control"
-              name="username"
-              value={username}
-              onChange={onChangeUsername}
-              validations={[required]}
-            />
+            <div>
+              <input
+                type="text"
+                className="form-control"
+                name="username"
+                value={username}
+                onChange={onChangeUsername}
+              />
+              {usernameErr && (<div className="invalid-feedback d-block">
+                This field is required!
+              </div>)}
+            </div>
           </div>
 
           <div className="form-group">
             <label htmlFor="password">Password</label>
-            <Input
-              type="password"
-              className="form-control"
-              name="password"
-              value={password}
-              onChange={onChangePassword}
-              validations={[required]}
-            />
+            <div>
+              <input
+                type="password"
+                className="form-control"
+                name="password"
+                value={password}
+                onChange={onChangePassword}
+              />
+              {passwordErr && (<div className="invalid-feedback d-block">
+                This field is required!
+              </div>)}
+            </div>
           </div>
 
           <div className="form-group">
@@ -118,8 +115,8 @@ const Login = () => {
               </div>
             </div>
           )}
-          <CheckButton style={{ display: "none" }} ref={checkBtn} />
-        </Form>
+          <button style={{ display: "none" }} ref={checkBtn} />
+        </form>
       </div>
     </div>
   );

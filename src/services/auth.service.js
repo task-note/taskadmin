@@ -18,7 +18,7 @@ const login = (username, password) => {
       password,
     })
     .then((response) => {
-      if (response.data.code == 200) {
+      if (response.data.code === 200) {
         localStorage.setItem("user", JSON.stringify(response.data.object["user"]));
         localStorage.setItem("accessToken", response.data.object["accessToken"]);
         localStorage.setItem("refreshToken", response.data.object["user"]["refreshToken"]);

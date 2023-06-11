@@ -1,24 +1,8 @@
 import React, { useState, useRef } from "react";
-import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
-import { control } from 'react-validation';
-import CheckButton from "react-validation/build/button";
 import { isEmail } from "validator";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import AuthService from "../services/auth.service";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-const CompInput = ({ error, isChanged, isUsed, icon, click, ...props }) => (
-  <div>
-    <div className="composite form-control">
-      <input {...props} />
-      <FontAwesomeIcon icon={icon} onClick={click}/>
-    </div>
-    {isChanged && isUsed && error}
-  </div>
-);
-
-const PasswordInput = control(CompInput);
 
 const required = (value) => {
   if (!value) {
@@ -30,31 +14,13 @@ const required = (value) => {
   }
 };
 
-const validEmail = (value) => {
-  if (!isEmail(value)) {
-    return (
-      <div className="invalid-feedback d-block">
-        This is not a valid email.
-      </div>
-    );
-  }
-};
-
-const vpassword = (value) => {
-  if (value.length < 6 || value.length > 40) {
-    return (
-      <div className="invalid-feedback d-block">
-        The password must be between 6 and 40 characters.
-      </div>
-    );
-  }
-};
-
 const Register = (props) => {
   const form = useRef();
   const checkBtn = useRef();
 
   const [email, setEmail] = useState("");
+  const [emailError, setEmailInvalid] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
   const [password, setPassword] = useState("");
   const [successful, setSuccessful] = useState(false);
   const [message, setMessage] = useState("");
@@ -64,6 +30,13 @@ const Register = (props) => {
     const email = e.target.value;
     setEmail(email);
   };
+  const validEmail = (e) => {
+    setEmailInvalid(!isEmail(e.target.value));
+  };
+  const validPassword = (e) => {
+    const value = e.target.value;
+    setPasswordError(value.length < 6 || value.length > 40);
+  }
 
   const onChangePassword = (e) => {
     const password = e.target.value;
@@ -121,33 +94,46 @@ const Register = (props) => {
           className="profile-img-card"
         />
 
-        <Form onSubmit={handleRegister} ref={form}>
+        <form onSubmit={handleRegister} ref={form}>
           {!successful && (
             <div>
               <div className="form-group">
                 <label htmlFor="email">Email</label>
-                <Input
-                  type="text"
-                  className="form-control"
-                  name="email"
-                  value={email}
-                  onChange={onChangeEmail}
-                  validations={[required, validEmail]}
-                />
+                <div>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="email"
+                    value={email}
+                    onChange={onChangeEmail}
+                    onBlur={validEmail}
+                  />
+                  {emailError && (
+                    <div className="invalid-feedback d-block">
+                      This is not a valid email.
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="form-group">
                 <label htmlFor="password">Password</label>
-                <PasswordInput
-                  type="password"
-                  name="password"
-                  id="password"
-                  value={password}
-                  onChange={onChangePassword}
-                  validations={[required, vpassword]}
-                  icon={pwdicon}
-                  click={onTogglePassword}
-                  />
+                <div>
+                  <div className="composite form-control">
+                    <input 
+                      type="password"
+                      name="password"
+                      id="password"
+                      value={password}
+                      onChange={onChangePassword}
+                      onBlur={validPassword}
+                      />
+                    <FontAwesomeIcon icon={pwdicon} onClick={onTogglePassword}/>
+                  </div>
+                  {passwordError && (<div className="invalid-feedback d-block">
+                    The password must be between 6 and 40 characters.
+                  </div>)}
+                </div>
               </div>
 
               <div className="form-group">
@@ -168,8 +154,8 @@ const Register = (props) => {
               </div>
             </div>
           )}
-          <CheckButton style={{ display: "none" }} ref={checkBtn} />
-        </Form>
+          <button style={{ display: "none" }} ref={checkBtn} />
+        </form>
       </div>
     </div>
   );
