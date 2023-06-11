@@ -1,0 +1,3 @@
+# https://www.tasknote.top/robotstxt.html
+User-agent: *
+Disallow:
