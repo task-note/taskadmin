@@ -40,16 +40,6 @@ const validEmail = (value) => {
   }
 };
 
-const vusername = (value) => {
-  if (value.length < 3 || value.length > 20) {
-    return (
-      <div className="invalid-feedback d-block">
-        The username must be between 3 and 20 characters.
-      </div>
-    );
-  }
-};
-
 const vpassword = (value) => {
   if (value.length < 6 || value.length > 40) {
     return (
@@ -64,17 +54,11 @@ const Register = (props) => {
   const form = useRef();
   const checkBtn = useRef();
 
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [successful, setSuccessful] = useState(false);
   const [message, setMessage] = useState("");
   const [pwdicon, setPasswordIcon] = useState(faEye);
-
-  const onChangeUsername = (e) => {
-    const username = e.target.value;
-    setUsername(username);
-  };
 
   const onChangeEmail = (e) => {
     const email = e.target.value;
@@ -91,7 +75,7 @@ const Register = (props) => {
     // toggle the type attribute
     const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
     password.setAttribute('type', type);
-    if (pwdicon == faEye) {
+    if (pwdicon === faEye) {
       setPasswordIcon(faEyeSlash);
     } else {
       setPasswordIcon(faEye);
@@ -108,7 +92,7 @@ const Register = (props) => {
     form.current.validateAll();
 
     if (checkBtn.current.context._errors.length === 0) {
-      AuthService.register(username, email, password).then(
+      AuthService.register(email, password).then(
         (response) => {
           setMessage(response.data.message);
           setSuccessful(true);
