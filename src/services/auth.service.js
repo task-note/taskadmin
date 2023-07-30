@@ -1,15 +1,27 @@
 import axios from "axios";
 
 const API_URL = "http://localhost:3000/api/auth/";
+const USR_URL = "http://localhost:3000/api/users/"
 
 const register = (email, password) => {
   const username = email;
-  return axios.post(API_URL + "signup", {
+  return axios.post(USR_URL + "signup", {
     username,
     email,
     password,
   });
 };
+
+const resend = (email) => {
+  var token = localStorage.getItem('accessToken')
+  return axios.post(USR_URL + "resend", {
+    email,
+  }, {
+    headers: {
+      'Authorization': `Basic ${token}`
+    }
+  });
+}
 
 const login = (username, password) => {
   return axios
@@ -54,6 +66,7 @@ const AuthService = {
   login,
   logout,
   getCurrentUser,
+  resend,
 }
 
 export default AuthService;

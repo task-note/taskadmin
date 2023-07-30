@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import AuthService from "../services/auth.service";
 
 const Profile = () => {
@@ -8,9 +8,12 @@ const Profile = () => {
       username: "",
       _id: "",
       email: "",
+      isActive: false,
       groups: []
     };
   }
+  const [isActive, ] = useState(currentUser["isActive"]);
+  console.log('--->', isActive)
   function getPermissions(user) {
     var results = [];
     user.groups.forEach(element => {
@@ -19,6 +22,10 @@ const Profile = () => {
       })
     });
     return results;
+  }
+
+  const resend = function() {
+    AuthService.resend(currentUser["email"]);
   }
 
   return (
@@ -35,9 +42,16 @@ const Profile = () => {
         <strong>Email:</strong> {currentUser.email}
       </p>
       <strong>Authorities:</strong>
+      {!isActive && (
+        <p>
+          You are not activiated, a activate email has been sent to your email address, please follow the link to activate your account.<br/>
+          Not received? <button id="resend" onClick={resend} className="btn btn-primary btn-sm">Resend</button>
+        </p>
+      )}
+      {isActive && (
       <ul>
         {getPermissions(currentUser).map((role, index) => <li key={index}>{role}</li>)}
-      </ul>
+      </ul>)}
     </div>
   );
 };

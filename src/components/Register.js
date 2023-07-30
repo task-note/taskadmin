@@ -14,6 +14,10 @@ const required = (value) => {
   }
 };
 
+function isPassValid(pass) {
+  return pass.length >= 6 && pass.length < 40;
+}
+
 const Register = (props) => {
   const form = useRef();
   const checkBtn = useRef();
@@ -35,7 +39,7 @@ const Register = (props) => {
   };
   const validPassword = (e) => {
     const value = e.target.value;
-    setPasswordError(value.length < 6 || value.length > 40);
+    setPasswordError(!isPassValid(value));
   }
 
   const onChangePassword = (e) => {
@@ -62,27 +66,34 @@ const Register = (props) => {
     setMessage("");
     setSuccessful(false);
 
-    form.current.validateAll();
-
-    if (checkBtn.current.context._errors.length === 0) {
-      AuthService.register(email, password).then(
-        (response) => {
-          setMessage(response.data.message);
-          setSuccessful(true);
-        },
-        (error) => {
-          const resMessage =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-
-          setMessage(resMessage);
-          setSuccessful(false);
-        }
-      );
+    const email_valid = isEmail(email);
+    const passwd_valid = isPassValid(password);
+    if (!email_valid) {
+      setEmailInvalid(true);
+      return;
     }
+    if (!passwd_valid) {
+      setPasswordError(true);
+      return;
+    }
+
+    AuthService.register(email, password).then(
+      (response) => {
+        setMessage(response.data.message);
+        setSuccessful(true);
+      },
+      (error) => {
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+
+        setMessage(resMessage);
+        setSuccessful(false);
+      }
+    );
   };
 
   return (
