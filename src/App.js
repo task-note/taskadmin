@@ -12,6 +12,7 @@ import Profile from "./components/Profile";
 import BoardUser from "./components/BoardUser";
 import BoardModerator from "./components/BoardModerator";
 import BoardAdmin from "./components/BoardAdmin";
+import Activate from "./components/Activiate";
 
 // import AuthVerify from "./common/AuthVerify";
 import EventBus from "./common/EventBus";
@@ -132,6 +133,7 @@ const App = () => {
           <Route path="/user" element={<BoardUser />} />
           <Route path="/mod" element={<BoardModerator />} />
           <Route path="/admin" element={<BoardAdmin />} />
+          <Route exact path="/activate" element={<Activate />} />
         </Routes>
       </div>
 

@@ -31,10 +31,10 @@ const Login = () => {
     setMessage("");
     setLoading(true);
 
-    setPasswordError(password.length == 0);
-    setUserNameError(username.length == 0);
+    setPasswordError(password.length === 0);
+    setUserNameError(username.length === 0);
 
-    if (password.length != 0 && username.length != 0) {
+    if (password.length !== 0 && username.length !== 0) {
       AuthService.login(username, password).then(
         () => {
           navigate("/profile");

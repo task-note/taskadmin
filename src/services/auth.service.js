@@ -2,6 +2,7 @@ import axios from "axios";
 
 const API_URL = "http://localhost:3000/api/auth/";
 const USR_URL = "http://localhost:3000/api/users/"
+const BASE_URL = "http://localhost:3000/api/"
 
 const register = (email, password) => {
   const username = email;
@@ -11,6 +12,22 @@ const register = (email, password) => {
     password,
   });
 };
+
+const activate = (email, code) => {
+  return axios
+    .get(BASE_URL + `/public/activate?email=${email}&code=${code}`)
+    .then((response) => {
+      if (response.data.code === 200) {
+        console.log(response.data.object["user"])
+        localStorage.setItem("user", JSON.stringify(response.data.object["user"]));
+      }
+      else {
+        throw new Error(JSON.stringify(response.data.object["errors"][0]));
+      }
+
+      return response.data.object;
+    });
+}
 
 const resend = (email) => {
   var token = localStorage.getItem('accessToken')
@@ -67,6 +84,7 @@ const AuthService = {
   logout,
   getCurrentUser,
   resend,
+  activate,
 }
 
 export default AuthService;
