@@ -13,8 +13,8 @@ const Activate = () => {
     if (email && code && email.length > 3 && code.length > 3) {
       setSearchParams("");
       AuthService.activate(email, code).then(() => {
-        //navigate("/profile");
-        //window.location.reload();
+        navigate("/profile");
+        window.location.reload();
       },
       (error) => {
         console.log(error);
