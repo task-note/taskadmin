@@ -29,6 +29,18 @@ const activate = (email, code) => {
     });
 }
 
+const changepassword = (code, newPassword) => {
+  return axios
+    .post(API_URL + `change-password-by-token/${code}`, {
+      newPassword
+    }).then((response) => {
+      if (response.data.code !== 200) {
+        throw new Error(JSON.stringify(response.data.object["errors"][0]));
+      }
+      return response.data.object;
+    });
+}
+
 const resend = (email) => {
   var token = localStorage.getItem('accessToken')
   return axios.post(USR_URL + "resend", {
@@ -37,6 +49,12 @@ const resend = (email) => {
     headers: {
       'Authorization': `Basic ${token}`
     }
+  });
+}
+
+const generatepassword = (username) => {
+  return axios.post(API_URL + 'generate-reset-password', {
+    username,
   });
 }
 
@@ -90,6 +108,8 @@ const AuthService = {
   getCurrentUser,
   resend,
   activate,
+  generatepassword,
+ changepassword,
 }
 
 export default AuthService;

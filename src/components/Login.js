@@ -25,6 +25,14 @@ const Login = () => {
     setPassword(password);
   };
 
+  const onResetPasswd = (e) => {
+    console.log("reset");
+    e.preventDefault();
+    AuthService.generatepassword(username).then(() => {
+      setMessage("An reset password email has been sent to your email address, please check the link to reset password.");
+    });
+  }
+
   const handleLogin = (e) => {
     e.preventDefault();
 
@@ -100,11 +108,17 @@ const Login = () => {
           </div>
 
           <div className="form-group">
-            <button className="btn btn-primary btn-block" disabled={loading}>
+            <button className="btn btn-primary btn-half" disabled={loading}>
               {loading && (
                 <span className="spinner-border spinner-border-sm"></span>
               )}
               <span>Login</span>
+            </button>
+            <button className="btn btn-primary btn-half float-right" onClick={onResetPasswd} disabled={loading}>
+              {loading && (
+                <span className="spinner-border spinner-border-sm"></span>
+              )}
+              <span>Reset Password</span>
             </button>
           </div>
 
